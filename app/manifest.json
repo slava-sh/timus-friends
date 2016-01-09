@@ -15,22 +15,26 @@
     ]
   },
   "permissions": [
-    "tabs",
-    "http://*/*",
-    "https://*/*",
     "storage"
   ],
   "content_scripts": [
     {
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ],
+      "matches": ["*://acm.timus.ru/*"],
       "js": [
-        "scripts/contentscript.js"
-      ],
-      "run_at": "document_end",
-      "all_frames": false
+        "scripts/menu.js"
+      ]
+    },
+    {
+      "matches": ["*://acm.timus.ru/author.aspx?*"],
+      "js": [
+        "scripts/author.js"
+      ]
+    },
+    {
+      "matches": ["*://acm.timus.ru/ranklist.aspx?friends"],
+      "js": [
+        "scripts/friends.js"
+      ]
     }
   ]
 }
