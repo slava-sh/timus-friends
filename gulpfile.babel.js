@@ -23,16 +23,12 @@ gulp.task('extras', () => {
 function lint(files, options) {
   return () => {
     return gulp.src(files)
-      .pipe($.eslint(options))
+      .pipe($.eslint())
       .pipe($.eslint.format());
   };
 }
 
-gulp.task('lint', lint('app/scripts.babel/**/*.js', {
-  env: {
-    es6: true
-  }
-}));
+gulp.task('lint', lint('app/scripts.babel/**/*.js'));
 
 gulp.task('images', () => {
   return gulp.src('app/images/**/*')
