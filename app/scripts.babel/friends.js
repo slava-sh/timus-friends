@@ -1,17 +1,44 @@
-function parseProfile(html) {
-  const parser = new DOMParser();
-  const dom = parser.parseFromString(html, 'text/html');
-  const row = dom.querySelector('.ranklist tr.current');
-  const profileLink = row.children[1].firstChild;
-  return {
+const PAGE_SIZE = 1000;
+const PAGES_TO_LOAD = 3;
+
+function parseRow(row, hasFlag) {
+  const profileLink = row.children[1 + hasFlag].firstChild;
+  const profile = {
     id: getQueryVariable('id', profileLink.getAttribute('href')),
     rank: +row.children[0].innerHTML,
-    flag: dom.querySelector('.author_flag').innerHTML,
     name: profileLink.innerHTML,
-    rating: +row.children[2].innerHTML,
-    solved: +row.children[3].innerHTML,
-    lastAC: row.children[4].innerHTML,
+    rating: +row.children[2 + hasFlag].innerHTML,
+    solved: +row.children[3 + hasFlag].innerHTML,
+    lastAC: row.children[4 + hasFlag].innerHTML,
   };
+  if (hasFlag) {
+    profile.flag = row.children[1].innerHTML;
+  }
+  return profile;
+}
+
+function parseProfilePage(dom) {
+  const row = dom.querySelector('.ranklist tr.current');
+  const profile = parseRow(row, false);
+  profile.flag = dom.querySelector('.author_flag').innerHTML;
+  return profile;
+}
+
+function removeNondataRows(ranklist) {
+  Array.from(ranklist.querySelectorAll('.navigation')).forEach(item => item.remove());
+  const header = ranklist.querySelector('tr');
+  header.remove();
+  return header;
+}
+
+function parseRanklistPage(dom) {
+  const ranklist = dom.querySelector('.ranklist tbody');
+  removeNondataRows(ranklist);
+  const profiles = [];
+  Array.from(ranklist.querySelectorAll('tr')).forEach(row => {
+    profiles.push(parseRow(row, true));
+  });
+  return profiles;
 }
 
 function renderRow(profile) {
@@ -78,6 +105,7 @@ init(friends => {
   Object.keys(friends).map(friendId => {
     profiles[friendId] = {
       id: friendId,
+      needsLoading: true,
     };
   });
 
@@ -91,21 +119,60 @@ init(friends => {
   }
 
   document.title = getMessage('friends_ranklist');
-  const body = ranklist.parentNode.parentNode;
-  body.querySelector('.title').innerText = getMessage('friends_ranklist');
-  body.querySelector('div').remove();
-  Array.from(body.querySelectorAll('.navigation')).forEach(item => item.remove());
+  const pageBody = ranklist.parentElement.parentElement;
+  pageBody.querySelector('.title').innerText = getMessage('friends_ranklist');
+  pageBody.querySelector('div').remove(); // Volume navigation
 
-  header = ranklist.querySelector('tr');
+  header = removeNondataRows(ranklist);
+  parseRanklistPage(document).forEach(profile => {
+    if (friends.hasOwnProperty(profile.id)) {
+      profiles[profile.id] = profile;
+    }
+  });
   replaceRanklist();
 
+  const cachedRank = {};
   Object.keys(friends).forEach(friendId => {
+    cachedRank[friendId] = friendId % PAGES_TO_LOAD + 1;
+  });
+
+  const pagesToLoad = {};
+  Object.keys(friends).forEach(friendId => {
+    if (!profiles[friendId].needsLoading) {
+      return;
+    }
+    // TODO: what if a friend goes 3000 -> 3001?
+    const page = Math.floor((cachedRank[friendId] - 1) / PAGE_SIZE) + 1;
+    if (page <= PAGES_TO_LOAD) {
+      pagesToLoad[page] = true;
+    } else {
+      ajax({
+        method: 'GET',
+        url: `/author.aspx?id=${friendId}`,
+      }, response => {
+        const parser = new DOMParser();
+        const dom = parser.parseFromString(response, 'text/html');
+        const profile = parseProfilePage(dom);
+        profiles[profile.id] = profile;
+        replaceRanklist();
+      });
+    }
+  });
+
+  console.log('pagesToLoad', pagesToLoad);
+  Object.keys(pagesToLoad).forEach(page => {
+    const start = PAGE_SIZE * (page - 1) + 1;
     ajax({
       method: 'GET',
-      url: `/author.aspx?id=${friendId}`,
+      url: `/ranklist.aspx?from=${start}&count=${PAGE_SIZE}`,
     }, response => {
-      const profile = parseProfile(response);
-      profiles[profile.id] = profile;
+      const parser = new DOMParser();
+      const dom = parser.parseFromString(response, 'text/html');
+      parseRanklistPage(dom).forEach(profile => {
+        if (friends.hasOwnProperty(profile.id)) {
+          profiles[profile.id] = profile;
+        }
+      });
       replaceRanklist();
     });
   });
