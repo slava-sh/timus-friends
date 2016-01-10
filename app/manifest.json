@@ -31,7 +31,17 @@
       "matches": ["*://acm.timus.ru/author.aspx?*"],
       "js": [
         "scripts/common.js",
-        "scripts/author.js"
+        "scripts/author.js",
+        "scripts/ranklist.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["*://acm.timus.ru/ranklist.aspx*"],
+      "exclude_matches": ["*://acm.timus.ru/ranklist.aspx?friends*"],
+      "js": [
+        "scripts/common.js",
+        "scripts/ranklist.js"
       ],
       "run_at": "document_end"
     },
