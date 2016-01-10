@@ -1,0 +1,25 @@
+.tf__button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
+  z-index: 10000;
+}
+
+.tf__button:focus {
+  outline: none;
+}
+
+.tf__button--follow:before {
+  content: '☆';
+}
+
+.tf__button--unfollow:before {
+  content: '★';
+}
+
+.ranklist .tf__button {
+  float: right;
+}

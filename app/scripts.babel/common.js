@@ -82,3 +82,35 @@ function getQueryVariable(variable, url) {
     }
   }
 }
+
+function follow(profileId) {
+  chrome.runtime.sendMessage({ follow: true, profileId });
+}
+
+function unfollow(profileId) {
+  chrome.runtime.sendMessage({ unfollow: true, profileId });
+}
+
+function createButton(currentlyFollowing, profileId) {
+  const button = document.createElement('button');
+  button.classList.add('tf__button');
+  if (currentlyFollowing) {
+    button.classList.add('tf__button--unfollow');
+  } else {
+    button.classList.add('tf__button--follow');
+  }
+  button.addEventListener('click', () => {
+    if (currentlyFollowing) {
+      unfollow(profileId);
+      currentlyFollowing = false;
+      button.classList.remove('tf__button--unfollow');
+      button.classList.add('tf__button--follow');
+    } else {
+      follow(profileId);
+      currentlyFollowing = true;
+      button.classList.remove('tf__button--follow');
+      button.classList.add('tf__button--unfollow');
+    }
+  });
+  return button;
+}

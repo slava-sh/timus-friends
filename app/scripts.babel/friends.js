@@ -63,6 +63,7 @@ function renderRow(profile) {
     a.href = `author.aspx?id=${profile.id}`;
     a.innerHTML = profile.name;
     name.appendChild(a);
+    name.appendChild(createButton(true, profile.id));
   } else {
     name.innerHTML = '&nbsp;';
   }

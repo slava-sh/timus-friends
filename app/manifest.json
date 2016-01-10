@@ -24,6 +24,7 @@
         "scripts/common.js",
         "scripts/menu.js"
       ],
+      "css": ["styles/button.css"],
       "run_at": "document_end"
     },
     {
