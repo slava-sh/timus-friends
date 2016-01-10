@@ -196,7 +196,9 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
     console.log('me', response);
     const myId = response.split('\n')[1].split('\t')[2];
     console.log('me', myId);
-    profiles[myId].me = true;
-    replaceRanklist();
+    if (friends.hasOwnProperty(myId)) {
+      friends[myId].me = true;
+      replaceRanklist();
+    }
   });
 });
