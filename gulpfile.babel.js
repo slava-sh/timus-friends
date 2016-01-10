@@ -7,6 +7,8 @@ import {stream as wiredep} from 'wiredep';
 
 const $ = gulpLoadPlugins();
 
+const DEBUG = false;
+
 gulp.task('extras', () => {
   return gulp.src([
     'app/*.*',
@@ -49,10 +51,10 @@ gulp.task('images', () => {
 gulp.task('html',  () => {
   return gulp.src('app/*.html')
     .pipe($.useref({searchPath: ['.tmp', 'app', '.']}))
-    .pipe($.sourcemaps.init())
+    .pipe($.if(DEBUG, $.sourcemaps.init()))
     .pipe($.if('*.js', $.uglify()))
     .pipe($.if('*.css', $.minifyCss({compatibility: '*'})))
-    .pipe($.sourcemaps.write())
+    .pipe($.if(DEBUG, $.sourcemaps.write()))
     .pipe($.if('*.html', $.minifyHtml({conditionals: true, loose: true})))
     .pipe(gulp.dest('dist'));
 });
@@ -69,9 +71,9 @@ gulp.task('chromeManifest', () => {
       }
   }))
   .pipe($.if('*.css', $.minifyCss({compatibility: '*'})))
-  .pipe($.if('*.js', $.sourcemaps.init()))
+  .pipe($.if('*.js', $.if(DEBUG, $.sourcemaps.init())))
   .pipe($.if('*.js', $.uglify()))
-  .pipe($.if('*.js', $.sourcemaps.write('.')))
+  .pipe($.if('*.js', $.if(DEBUG, $.sourcemaps.write('.'))))
   .pipe(gulp.dest('dist'));
 });
 
