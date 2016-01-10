@@ -49,43 +49,47 @@ function renderRow(profile) {
   return tr;
 }
 
+function renderRows(profiles) {
+  const profileArr = Object.keys(profiles).map(id => profiles[id]);
+  profileArr.sort((a, b) => a.rank - b.rank);
+  console.log(profileArr);
+  return profileArr.map(renderRow);
+}
+
+function renderRanklist(header, profiles) {
+  const ranklist = document.createElement('tbody');
+  ranklist.appendChild(header);
+  renderRows(profiles).forEach(row => ranklist.appendChild(row));
+  return ranklist;
+}
+
 init(friends => {
-  const ranklist = document.querySelector('.ranklist tbody');
+  let ranklist = document.querySelector('.ranklist tbody');
+
   const body = ranklist.parentNode.parentNode;
-
   body.querySelector('.title').innerText = getMessage('friends_ranklist');
+
   body.querySelector('div').remove();
-  Array.from(body.querySelectorAll('.navigation')).forEach(item => {
-    item.remove();
-  });
-  Array.from(ranklist.querySelectorAll('tr')).forEach((item, i) => {
-    if (i !== 0) {
-      item.remove();
-    }
-  });
+  Array.from(body.querySelectorAll('.navigation')).forEach(item => item.remove());
 
-  const spinner = document.createElement('td');
-  spinner.innerText = 'loading...';
-  const spinnerTr = document.createElement('tr');
-  spinnerTr.appendChild(spinner);
-  ranklist.appendChild(spinner);
+  const header = ranklist.querySelector('tr');
+  const profiles = {};
 
-  let loadingCount = 0;
+  function replaceRanklist() {
+    const newRanklist = renderRanklist(header, profiles);
+    ranklist.parentNode.replaceChild(newRanklist, ranklist);
+    ranklist = newRanklist;
+  }
+
+  replaceRanklist();
   Object.keys(friends).forEach(friendId => {
-    console.log('loading', friendId);
-    ++loadingCount;
     ajax({
       method: 'GET',
       url: `http://acm.timus.ru/author.aspx?id=${friendId}`,
     }, response => {
-      --loadingCount;
-      if (loadingCount === 0) {
-        spinner.remove();
-      }
       const profile = parseProfile(response);
-      console.log(profile);
-      const row = renderRow(profile);
-      ranklist.appendChild(row);
+      profiles[profile.id] = profile;
+      replaceRanklist();
     });
   });
 });
