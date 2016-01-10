@@ -19,31 +19,35 @@ function renderRow(profile) {
   tr.classList.add('content');
 
   const rank = document.createElement('td');
-  rank.innerHTML = profile.rank;
+  rank.innerHTML = profile.rank || '';
   tr.appendChild(rank);
 
   const flag = document.createElement('td');
-  flag.innerHTML = profile.flag;
+  flag.innerHTML = profile.flag || '';
   tr.appendChild(flag);
 
   const name = document.createElement('td');
   name.classList.add('name');
-  const a = document.createElement('a');
-  a.href = `author.aspx?id=${profile.id}`;
-  a.innerHTML = profile.name;
-  name.appendChild(a);
+  if (profile.name) {
+    const a = document.createElement('a');
+    a.href = `author.aspx?id=${profile.id}`;
+    a.innerHTML = profile.name;
+    name.appendChild(a);
+  } else {
+    name.innerHTML = '&nbsp;';
+  }
   tr.appendChild(name);
 
   const rating = document.createElement('td');
-  rating.innerHTML = profile.rating;
+  rating.innerHTML = profile.rating || '';
   tr.appendChild(rating);
 
   const solved = document.createElement('td');
-  solved.innerHTML = profile.solved;
+  solved.innerHTML = profile.solved || '';
   tr.appendChild(solved);
 
   const lastAC = document.createElement('td');
-  lastAC.innerHTML = profile.lastAC;
+  lastAC.innerHTML = profile.lastAC || '';
   tr.appendChild(lastAC);
 
   return tr;
@@ -51,8 +55,11 @@ function renderRow(profile) {
 
 function renderRows(profiles) {
   const profileArr = Object.keys(profiles).map(id => profiles[id]);
-  profileArr.sort((a, b) => a.rank - b.rank);
-  console.log(profileArr);
+  profileArr.sort((a, b) => {
+    const rankA = a.rank || Number.POSITIVE_INFINITY;
+    const rankB = b.rank || Number.POSITIVE_INFINITY;
+    return rankA - rankB;
+  });
   return profileArr.map(renderRow);
 }
 
@@ -74,6 +81,11 @@ init(friends => {
 
   const header = ranklist.querySelector('tr');
   const profiles = {};
+  Object.keys(friends).map(friendId => {
+    profiles[friendId] = {
+      id: friendId,
+    };
+  });
 
   function replaceRanklist() {
     const newRanklist = renderRanklist(header, profiles);
