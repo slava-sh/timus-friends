@@ -13,15 +13,17 @@
 }
 
 .tf__button:before {
+  content: '★';
+  -webkit-text-stroke: 1px black;
   margin-left: 0.5em;
 }
 
 .tf__button--follow:before {
-  content: '☆';
+  color: transparent;
 }
 
 .tf__button--unfollow:before {
-  content: '★';
+  color: gold;
 }
 
 .ranklist .tf__button {
