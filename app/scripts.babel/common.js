@@ -35,3 +35,22 @@ function init(callback) {
     chrome.runtime.sendMessage({ getFriends: true }, callback);
   });
 }
+
+function parseUrl(url) {
+  const parser = document.createElement('a');
+  parser.href = url;
+  return parser;
+}
+
+function getQueryVariable(variable, url) {
+  const parsedUrl = url === undefined ? window.location : parseUrl(url);
+  // http://stackoverflow.com/questions/2090551/parse-query-string-in-javascript
+  const query = parsedUrl.search.substring(1);
+  const vars = query.split('&');
+  for (let i = 0; i < vars.length; i++) {
+    const pair = vars[i].split('=');
+    if (decodeURIComponent(pair[0]) === variable) {
+      return decodeURIComponent(pair[1]);
+    }
+  }
+}

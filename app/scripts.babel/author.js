@@ -1,15 +1,3 @@
-function getQueryVariable(variable) {
-  // http://stackoverflow.com/questions/2090551/parse-query-string-in-javascript
-  const query = window.location.search.substring(1);
-  const vars = query.split('&');
-  for (let i = 0; i < vars.length; i++) {
-    const pair = vars[i].split('=');
-    if (decodeURIComponent(pair[0]) === variable) {
-      return decodeURIComponent(pair[1]);
-    }
-  }
-}
-
 function createButton(currentlyFollowing, profileId) {
   const button = document.createElement('button');
   button.innerText = currentlyFollowing ? 'unfollow' : 'follow';
