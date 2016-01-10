@@ -30,6 +30,10 @@
   float: right;
 }
 
+.ranklist .first .tf__button {
+  font-size: 1rem;
+}
+
 .author_name .tf__button {
   width: 0;
   margin: -1em 0;
