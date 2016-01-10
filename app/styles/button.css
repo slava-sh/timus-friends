@@ -12,6 +12,10 @@
   outline: none;
 }
 
+.tf__button:before {
+  margin-left: 0.5em;
+}
+
 .tf__button--follow:before {
   content: '☆';
 }
@@ -22,4 +26,9 @@
 
 .ranklist .tf__button {
   float: right;
+}
+
+.author_name .tf__button {
+  width: 0;
+  margin: -1em 0;
 }
