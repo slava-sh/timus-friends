@@ -126,7 +126,7 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
 
   function replaceRanklist() {
     const newRanklist = renderRanklist(header, friends);
-    ranklist.parentNode.replaceChild(newRanklist, ranklist);
+    ranklist.parentElement.replaceChild(newRanklist, ranklist);
     ranklist = newRanklist;
   }
 
