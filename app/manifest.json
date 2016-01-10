@@ -20,21 +20,18 @@
   "content_scripts": [
     {
       "matches": ["*://acm.timus.ru/*"],
-      "js": [
-        "scripts/menu.js"
-      ]
+      "js": ["scripts/menu.js"],
+      "run_at": "document_end"
     },
     {
       "matches": ["*://acm.timus.ru/author.aspx?*"],
-      "js": [
-        "scripts/author.js"
-      ]
+      "js": ["scripts/author.js"],
+      "run_at": "document_end"
     },
     {
       "matches": ["*://acm.timus.ru/ranklist.aspx?friends"],
-      "js": [
-        "scripts/friends.js"
-      ]
+      "js": ["scripts/friends.js"],
+      "run_at": "document_end"
     }
   ]
 }
