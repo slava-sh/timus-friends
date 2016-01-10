@@ -17,6 +17,9 @@ function parseProfile(html) {
 function renderRow(profile) {
   const tr = document.createElement('tr');
   tr.classList.add('content');
+  if (profile.me) {
+    tr.classList.add('current');
+  }
 
   const rank = document.createElement('td');
   rank.innerHTML = profile.rank || '';
@@ -71,15 +74,6 @@ function renderRanklist(header, profiles) {
 }
 
 init(friends => {
-  let ranklist = document.querySelector('.ranklist tbody');
-
-  const body = ranklist.parentNode.parentNode;
-  body.querySelector('.title').innerText = getMessage('friends_ranklist');
-
-  body.querySelector('div').remove();
-  Array.from(body.querySelectorAll('.navigation')).forEach(item => item.remove());
-
-  const header = ranklist.querySelector('tr');
   const profiles = {};
   Object.keys(friends).map(friendId => {
     profiles[friendId] = {
@@ -87,21 +81,41 @@ init(friends => {
     };
   });
 
+  let ranklist = document.querySelector('.ranklist tbody');
+  let header;
+
   function replaceRanklist() {
     const newRanklist = renderRanklist(header, profiles);
     ranklist.parentNode.replaceChild(newRanklist, ranklist);
     ranklist = newRanklist;
   }
 
+  document.title = getMessage('friends_ranklist');
+  const body = ranklist.parentNode.parentNode;
+  body.querySelector('.title').innerText = getMessage('friends_ranklist');
+  body.querySelector('div').remove();
+  Array.from(body.querySelectorAll('.navigation')).forEach(item => item.remove());
+
+  header = ranklist.querySelector('tr');
   replaceRanklist();
+
   Object.keys(friends).forEach(friendId => {
     ajax({
       method: 'GET',
-      url: `http://acm.timus.ru/author.aspx?id=${friendId}`,
+      url: `/author.aspx?id=${friendId}`,
     }, response => {
       const profile = parseProfile(response);
       profiles[profile.id] = profile;
       replaceRanklist();
     });
+  });
+
+  ajax({
+    method: 'GET',
+    url: `/textstatus.aspx?author=me&count=1`,
+  }, response => {
+    const myId = response.split('\n')[1].split('\t')[2];
+    profiles[myId].me = true;
+    replaceRanklist();
   });
 });
