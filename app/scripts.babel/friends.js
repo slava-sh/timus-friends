@@ -100,16 +100,39 @@ function renderRanklist(header, profiles) {
   return ranklist;
 }
 
+function cacheRanks(profiles) {
+  const ranks = {};
+  Object.keys(profiles).map(id => {
+    ranks[id] = profiles[id].rank;
+  });
+  chrome.runtime.sendMessage({ setCachedRanks: true, cachedRanks: ranks });
+}
+
 const startTime = new Date().getTime();
 
 init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
   const profiles = {};
+  let loadingProfiles = 0;
   Object.keys(friends).map(friendId => {
     profiles[friendId] = {
       id: friendId,
       needsLoading: true,
     };
+    ++loadingProfiles;
   });
+
+  function loadProfile(profile) {
+    if (!friends.hasOwnProperty(profile.id)) {
+      return;
+    }
+    if (profiles[profile.id].needsLoading) {
+      --loadingProfiles;
+      if (loadingProfiles === 0) {
+        cacheRanks(profiles);
+      }
+    }
+    profiles[profile.id] = profile;
+  }
 
   let ranklist = document.querySelector('.ranklist tbody');
   let header;
@@ -127,11 +150,7 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
   pageBody.querySelector('div').remove(); // Volume navigation
 
   header = removeNondataRows(ranklist);
-  parseRanklistPage(document).forEach(profile => {
-    if (friends.hasOwnProperty(profile.id)) {
-      profiles[profile.id] = profile;
-    }
-  });
+  parseRanklistPage(document).forEach(loadProfile);
   replaceRanklist();
 
   const pagesToLoad = {};
@@ -150,8 +169,7 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
       }, response => {
         const parser = new DOMParser();
         const dom = parser.parseFromString(response, 'text/html');
-        const profile = parseProfilePage(dom);
-        profiles[profile.id] = profile;
+        loadProfile(parseProfilePage(dom));
         replaceRanklist();
       });
     }
@@ -166,11 +184,7 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
     }, response => {
       const parser = new DOMParser();
       const dom = parser.parseFromString(response, 'text/html');
-      parseRanklistPage(dom).forEach(profile => {
-        if (friends.hasOwnProperty(profile.id)) {
-          profiles[profile.id] = profile;
-        }
-      });
+      parseRanklistPage(dom).forEach(loadProfile);
       replaceRanklist();
     });
   });
@@ -179,6 +193,7 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
     method: 'GET',
     url: `/textstatus.aspx?author=me&count=1`,
   }, response => {
+    // TODO: handle errors
     console.log('me', response);
     const myId = response.split('\n')[1].split('\t')[2];
     console.log('me', myId);
