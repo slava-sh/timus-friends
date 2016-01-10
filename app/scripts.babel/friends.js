@@ -110,11 +110,8 @@ function cacheRanks(profiles) {
 
 init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
   let loadingFriends = 0;
-  Object.keys(friends).map(friendId => {
-    friends[friendId] = {
-      id: friendId,
-      needsLoading: true,
-    };
+  Object.keys(friends).map(id => {
+    friends[id] = { id, needsLoading: true };
     ++loadingFriends;
   });
 
@@ -150,18 +147,18 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
   replaceRanklist();
 
   const pagesToLoad = {};
-  Object.keys(friends).forEach(friendId => {
-    if (!friends[friendId].needsLoading) {
+  Object.keys(friends).forEach(id => {
+    if (!friends[id].needsLoading) {
       return;
     }
     // TODO: what if a friend goes 3000 -> 3001?
-    const page = Math.floor((cachedRanks[friendId] - 1) / PAGE_SIZE) + 1;
+    const page = Math.floor((cachedRanks[id] - 1) / PAGE_SIZE) + 1;
     if (page <= PAGES_TO_LOAD) {
       pagesToLoad[page] = true;
     } else {
       ajax({
         method: 'GET',
-        url: `/author.aspx?id=${friendId}`,
+        url: `/author.aspx?id=${id}`,
       }, response => {
         const parser = new DOMParser();
         const dom = parser.parseFromString(response, 'text/html');
