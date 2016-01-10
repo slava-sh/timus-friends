@@ -111,34 +111,33 @@ function cacheRanks(profiles) {
 const startTime = new Date().getTime();
 
 init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
-  const profiles = {};
-  let loadingProfiles = 0;
+  let loadingFriends = 0;
   Object.keys(friends).map(friendId => {
-    profiles[friendId] = {
+    friends[friendId] = {
       id: friendId,
       needsLoading: true,
     };
-    ++loadingProfiles;
+    ++loadingFriends;
   });
 
   function loadProfile(profile) {
     if (!friends.hasOwnProperty(profile.id)) {
       return;
     }
-    if (profiles[profile.id].needsLoading) {
-      --loadingProfiles;
-      if (loadingProfiles === 0) {
-        cacheRanks(profiles);
+    if (friends[profile.id].needsLoading) {
+      --loadingFriends;
+      if (loadingFriends === 0) {
+        cacheRanks(friends);
       }
     }
-    profiles[profile.id] = profile;
+    friends[profile.id] = profile;
   }
 
   let ranklist = document.querySelector('.ranklist tbody');
   let header;
 
   function replaceRanklist() {
-    const newRanklist = renderRanklist(header, profiles);
+    const newRanklist = renderRanklist(header, friends);
     ranklist.parentNode.replaceChild(newRanklist, ranklist);
     ranklist = newRanklist;
     console.log((new Date().getTime() - startTime) / 1000, 's elapsed');
@@ -155,7 +154,7 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
 
   const pagesToLoad = {};
   Object.keys(friends).forEach(friendId => {
-    if (!profiles[friendId].needsLoading) {
+    if (!friends[friendId].needsLoading) {
       return;
     }
     // TODO: what if a friend goes 3000 -> 3001?
