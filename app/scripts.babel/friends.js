@@ -100,6 +100,8 @@ function renderRanklist(header, profiles) {
   return ranklist;
 }
 
+const startTime = new Date().getTime();
+
 init(friends => {
   const profiles = {};
   Object.keys(friends).map(friendId => {
@@ -116,6 +118,7 @@ init(friends => {
     const newRanklist = renderRanklist(header, profiles);
     ranklist.parentNode.replaceChild(newRanklist, ranklist);
     ranklist = newRanklist;
+    console.log((new Date().getTime() - startTime) / 1000, 's elapsed');
   }
 
   document.title = getMessage('friends_ranklist');
@@ -181,7 +184,9 @@ init(friends => {
     method: 'GET',
     url: `/textstatus.aspx?author=me&count=1`,
   }, response => {
+    console.log('me', response);
     const myId = response.split('\n')[1].split('\t')[2];
+    console.log('me', myId);
     profiles[myId].me = true;
     replaceRanklist();
   });
