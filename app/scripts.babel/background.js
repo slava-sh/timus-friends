@@ -27,17 +27,15 @@ function setCachedRanks(newValue, callback) {
 
 function follow(id, callback) {
   getFriends(friends => {
-    const newFriends = friends;
-    newFriends[id] = true;
-    setFriends(newFriends, callback);
+    friends[id] = true;
+    setFriends(friends, callback);
   });
 }
 
 function unfollow(id, callback) {
   getFriends(friends => {
-    const newFriends = friends;
-    delete newFriends[id];
-    setFriends(newFriends, callback);
+    delete friends[id];
+    setFriends(friends, callback);
   });
 }
 
