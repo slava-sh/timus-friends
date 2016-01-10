@@ -10,5 +10,13 @@
   "friends_ranklist": {
     "message": "Рейтинг друзей",
     "description": ""
+  },
+  "follow": {
+    "message": "Добавить в друзья",
+    "description": ""
+  },
+  "unfollow": {
+    "message": "Удалить из друзей",
+    "description": ""
   }
 }

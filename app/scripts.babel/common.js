@@ -98,8 +98,10 @@ function createButton(currentlyFollowing, profileId) {
   button.classList.add('tf__button');
   if (currentlyFollowing) {
     button.classList.add('tf__button--unfollow');
+    button.title = getMessage('unfollow');
   } else {
     button.classList.add('tf__button--follow');
+    button.title = getMessage('follow');
   }
   button.addEventListener('click', () => {
     if (currentlyFollowing) {
@@ -107,11 +109,13 @@ function createButton(currentlyFollowing, profileId) {
       currentlyFollowing = false;
       button.classList.remove('tf__button--unfollow');
       button.classList.add('tf__button--follow');
+      button.title = getMessage('follow');
     } else {
       follow(profileId);
       currentlyFollowing = true;
       button.classList.remove('tf__button--follow');
       button.classList.add('tf__button--unfollow');
+      button.title = getMessage('unfollow');
     }
   });
   return button;

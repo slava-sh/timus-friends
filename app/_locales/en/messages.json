@@ -10,5 +10,13 @@
   "friends_ranklist": {
     "message": "Friends ranklist",
     "description": ""
+  },
+  "follow": {
+    "message": "Add to friends",
+    "description": ""
+  },
+  "unfollow": {
+    "message": "Remove from friends",
+    "description": ""
   }
 }
