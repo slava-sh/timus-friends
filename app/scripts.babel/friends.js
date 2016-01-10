@@ -102,7 +102,7 @@ function renderRanklist(header, profiles) {
 
 const startTime = new Date().getTime();
 
-init(friends => {
+init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
   const profiles = {};
   Object.keys(friends).map(friendId => {
     profiles[friendId] = {
@@ -134,18 +134,13 @@ init(friends => {
   });
   replaceRanklist();
 
-  const cachedRank = {};
-  Object.keys(friends).forEach(friendId => {
-    cachedRank[friendId] = friendId % PAGES_TO_LOAD + 1;
-  });
-
   const pagesToLoad = {};
   Object.keys(friends).forEach(friendId => {
     if (!profiles[friendId].needsLoading) {
       return;
     }
     // TODO: what if a friend goes 3000 -> 3001?
-    const page = Math.floor((cachedRank[friendId] - 1) / PAGE_SIZE) + 1;
+    const page = Math.floor((cachedRanks[friendId] - 1) / PAGE_SIZE) + 1;
     if (page <= PAGES_TO_LOAD) {
       pagesToLoad[page] = true;
     } else {

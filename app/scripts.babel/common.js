@@ -30,9 +30,20 @@ function getMessage(id) {
   return messageBundle[id].message;
 }
 
-function init(callback) {
+function init(requires, callback) {
+  function loadFriends(data) {
+    if (requires.friends) {
+      chrome.runtime.sendMessage({ getFriends: true }, friends => {
+        data.friends = friends;
+        callback(data);
+      });
+    } else {
+      callback(data);
+    }
+  }
+
   loadMessageBundle(() => {
-    chrome.runtime.sendMessage({ getFriends: true }, callback);
+    loadFriends({});
   });
 }
 

@@ -13,7 +13,7 @@ function createButton(currentlyFollowing, profileId) {
   return button;
 }
 
-init(friends => {
+init({ friends: true }, ({ friends }) => {
   const profileId = getQueryVariable('id');
   const currentlyFollowing = friends.hasOwnProperty(profileId);
   const button = createButton(currentlyFollowing, profileId);

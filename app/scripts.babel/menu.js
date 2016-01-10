@@ -1,4 +1,4 @@
-init(() => {
+init({}, () => {
   const friendsLink = document.createElement('a');
   friendsLink.href = '/ranklist.aspx?friends';
   friendsLink.innerText = getMessage('friends_ranklist');
