@@ -108,8 +108,6 @@ function cacheRanks(profiles) {
   chrome.runtime.sendMessage({ setCachedRanks: true, cachedRanks: ranks });
 }
 
-const startTime = new Date().getTime();
-
 init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
   let loadingFriends = 0;
   Object.keys(friends).map(friendId => {
@@ -140,7 +138,6 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
     const newRanklist = renderRanklist(header, friends);
     ranklist.parentNode.replaceChild(newRanklist, ranklist);
     ranklist = newRanklist;
-    console.log((new Date().getTime() - startTime) / 1000, 's elapsed');
   }
 
   document.title = getMessage('friends_ranklist');
@@ -174,7 +171,6 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
     }
   });
 
-  console.log('pagesToLoad', pagesToLoad);
   Object.keys(pagesToLoad).forEach(page => {
     const start = PAGE_SIZE * (page - 1) + 1;
     ajax({
@@ -193,9 +189,7 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
     url: `/textstatus.aspx?author=me&count=1`,
   }, response => {
     // TODO: handle errors
-    console.log('me', response);
     const myId = response.split('\n')[1].split('\t')[2];
-    console.log('me', myId);
     if (friends.hasOwnProperty(myId)) {
       friends[myId].me = true;
       replaceRanklist();
