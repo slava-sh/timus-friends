@@ -2,8 +2,12 @@ function ajax(options, callback) {
   const request = new XMLHttpRequest();
   request.open(options.method, options.url, options.async || true);
   request.onload = function handleResponse() {
-    if (callback) {
-      callback(this.response);
+    if (this.status >= 200 && this.status < 400) {
+      if (callback) {
+        callback(this.response);
+      }
+    } else {
+      // Ignore errors.
     }
   };
   return request.send(options.data);

@@ -170,7 +170,6 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
       });
     }
   });
-
   Object.keys(pagesToLoad).forEach(page => {
     const start = PAGE_SIZE * (page - 1) + 1;
     ajax({
@@ -188,8 +187,12 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
     method: 'GET',
     url: `/textstatus.aspx?author=me&count=1`,
   }, response => {
-    // TODO: handle errors
-    const myId = response.split('\n')[1].split('\t')[2];
+    let myId;
+    try {
+      myId = response.split('\n')[1].split('\t')[2];
+    } catch (e) {
+      // Cannot parse my id; carry on.
+    }
     if (friends.hasOwnProperty(myId)) {
       friends[myId].me = true;
       replaceRanklist();
