@@ -34,7 +34,10 @@
       "run_at": "document_end"
     },
     {
-      "matches": ["*://acm.timus.ru/ranklist.aspx*"],
+      "matches": [
+        "*://acm.timus.ru/ranklist.aspx*",
+        "*://acm.timus.ru/search.aspx*"
+      ],
       "exclude_matches": ["*://acm.timus.ru/ranklist.aspx?friends*"],
       "js": [
         "scripts/common.js",
