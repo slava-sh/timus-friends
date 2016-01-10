@@ -24,19 +24,11 @@ function parseProfilePage(dom) {
   return profile;
 }
 
-function removeNondataRows(ranklist) {
-  Array.from(ranklist.querySelectorAll('.navigation')).forEach(item => item.remove());
-  const header = ranklist.querySelector('tr');
-  header.remove();
-  return header;
-}
-
 function parseRanklistPage(dom) {
   const ranklist = dom.querySelector('.ranklist tbody');
-  removeNondataRows(ranklist);
   const profiles = [];
-  Array.from(ranklist.querySelectorAll('tr')).forEach(row => {
-    profiles.push(parseRow(row, true));
+  Array.from(ranklist.querySelectorAll('tr.content > td:first-child')).forEach(td => {
+    profiles.push(parseRow(td.parentElement, true));
   });
   return profiles;
 }
@@ -130,7 +122,7 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
   }
 
   let ranklist = document.querySelector('.ranklist tbody');
-  let header;
+  const header = ranklist.querySelector('tr > th').parentElement;
 
   function replaceRanklist() {
     const newRanklist = renderRanklist(header, friends);
@@ -143,7 +135,6 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
   pageBody.querySelector('.title').innerText = getMessage('friends_ranklist');
   pageBody.querySelector('div').remove(); // Volume navigation
 
-  header = removeNondataRows(ranklist);
   parseRanklistPage(document).forEach(loadProfile);
   replaceRanklist();
 
