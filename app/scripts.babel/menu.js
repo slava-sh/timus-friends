@@ -1,9 +1,9 @@
-console.log('please visit http://acm.timus.ru/ranklist.aspx?friends');
+init(() => {
+  const friendsLink = document.createElement('a');
+  friendsLink.href = '/ranklist.aspx?friends';
+  friendsLink.innerText = getMessage('friends_ranklist');
 
-const friendsLink = document.createElement('a');
-friendsLink.href = '/ranklist.aspx?friends';
-friendsLink.innerText = 'Рейтинг друзей';
-
-const ranklistLink = document.querySelector('a[href="/ranklist.aspx"]');
-ranklistLink.parentNode.insertBefore(friendsLink, ranklistLink.nextSibling);
-ranklistLink.parentNode.insertBefore(document.createElement('br'), friendsLink);
+  const ranklistLink = document.querySelector('a[href="/ranklist.aspx"]');
+  ranklistLink.parentNode.insertBefore(friendsLink, ranklistLink.nextSibling);
+  ranklistLink.parentNode.insertBefore(document.createElement('br'), friendsLink);
+});

@@ -25,12 +25,9 @@ function createButton(currentlyFollowing, profileId) {
   return button;
 }
 
-const profileId = getQueryVariable('id');
-console.log('profileId', profileId);
-
-chrome.runtime.sendMessage({ getFriends: true }, friends => {
+init(friends => {
+  const profileId = getQueryVariable('id');
   const currentlyFollowing = friends.hasOwnProperty(profileId);
-
   const button = createButton(currentlyFollowing, profileId);
   const authorName = document.querySelector('.author_name');
   authorName.appendChild(button);

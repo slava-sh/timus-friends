@@ -4,11 +4,11 @@
     "description": "The name of the application"
   },
   "appDescription": {
-    "message": "My Chrome Extension",
+    "message": "Мое расширение",
     "description": "The description of the application"
   },
   "friends_ranklist": {
-    "message": "Friends ranklist",
+    "message": "Рейтинг друзей",
     "description": ""
   }
 }
