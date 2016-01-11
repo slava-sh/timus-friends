@@ -145,7 +145,7 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
     }
     // TODO: what if a friend goes 3000 -> 3001?
     const page = Math.floor((cachedRanks[id] - 1) / PAGE_SIZE) + 1;
-    if (page <= PAGES_TO_LOAD) {
+    if (cachedRanks[id] && page <= PAGES_TO_LOAD) {
       pagesToLoad[page] = true;
     } else {
       ajax({
