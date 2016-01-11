@@ -80,7 +80,10 @@ function renderNoFriendsRow() {
   const tr = document.createElement('tr');
   tr.classList.add('tf__no-friends');
   const td = document.createElement('td');
-  td.innerHTML = getMessage('no_friends');
+  const [before, after] = getMessage('no_friends', '$star$').split('$star$');
+  td.appendChild(document.createTextNode(before));
+  td.appendChild(createButton(false));
+  td.appendChild(document.createTextNode(after));
   tr.appendChild(td);
   return tr;
 }

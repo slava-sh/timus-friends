@@ -1,3 +1,7 @@
 .tf__no-friends {
   text-align: center;
 }
+
+.ranklist .tf__no-friends .tf__button {
+  float: none;
+}

@@ -86,11 +86,15 @@ function getQueryVariable(variable, url) {
 }
 
 function follow(profileId) {
-  chrome.runtime.sendMessage({ follow: true, profileId });
+  if (profileId) {
+    chrome.runtime.sendMessage({ follow: true, profileId });
+  }
 }
 
 function unfollow(profileId) {
-  chrome.runtime.sendMessage({ unfollow: true, profileId });
+  if (profileId) {
+    chrome.runtime.sendMessage({ unfollow: true, profileId });
+  }
 }
 
 function createButton(currentlyFollowing, profileId) {

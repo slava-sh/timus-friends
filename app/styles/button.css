@@ -15,7 +15,6 @@
 .tf__button:before {
   content: '★';
   -webkit-text-stroke: 1px black;
-  margin-left: 0.5em;
 }
 
 .tf__button--follow:before {
@@ -37,4 +36,8 @@
 .author_name .tf__button {
   width: 0;
   margin: -1em 0;
+}
+
+.author_name .tf__button:before {
+  margin-left: 0.5em;
 }

@@ -20,7 +20,13 @@
     "description": ""
   },
   "no_friends": {
-    "message": "Добавьте друзей",
-    "description": "Shown when the user has no friends"
+    "message": "Используйте кнопку $star$, чтобы добавить друзей.",
+    "description": "Shown when the user has no friends",
+    "placeholders": {
+      "star": {
+        "content": "$1",
+        "example": "The placeholder will be replaced with the actual star icon."
+      }
+    }
   }
 }
