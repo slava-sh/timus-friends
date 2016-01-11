@@ -79,8 +79,8 @@ gulp.task('chromeManifest', () => {
 
 gulp.task('babel', () => {
   return gulp.src('app/scripts.babel/**/*.js')
-      .pipe($.babel())
-      .pipe(gulp.dest('app/scripts'));
+    .pipe($.babel())
+    .pipe(gulp.dest('app/scripts'));
 });
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
@@ -115,8 +115,8 @@ gulp.task('wiredep', () => {
 gulp.task('package', () => {
   const manifest = require('dist/manifest.json');
   return gulp.src('dist/**/*')
-      .pipe($.zip('Timus Friends-' + manifest.version + '.zip'))
-      .pipe(gulp.dest('package'));
+    .pipe($.zip('Timus Friends-' + manifest.version + '.zip'))
+    .pipe(gulp.dest('package'));
 });
 
 gulp.task('build', (cb) => {
