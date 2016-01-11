@@ -1,5 +1,5 @@
 # Timus Friends
-**Codeforces-style friends for Timus Online Judge**
+**Codeforces-style friending for the Timus Online Judge**
 
 ![Screenshot](./screenshot.png)
 

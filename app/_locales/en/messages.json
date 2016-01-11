@@ -4,7 +4,7 @@
     "description": "The name of the application"
   },
   "appDescription": {
-    "message": "Adds Codeforces-style friends to Timus Online Judge.",
+    "message": "Adds Codeforces-style friending to the Timus Online Judge.",
     "description": "The description of the application"
   },
   "friends_ranklist": {
