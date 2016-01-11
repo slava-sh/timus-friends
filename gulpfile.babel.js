@@ -113,7 +113,7 @@ gulp.task('wiredep', () => {
 });
 
 gulp.task('package', () => {
-  const manifest = require('dist/manifest.json');
+  const manifest = require('./dist/manifest.json');
   return gulp.src('dist/**/*')
     .pipe($.zip('Timus Friends-' + manifest.version + '.zip'))
     .pipe(gulp.dest('package'));
