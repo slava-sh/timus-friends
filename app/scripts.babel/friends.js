@@ -76,7 +76,16 @@ function renderRow(profile) {
   return tr;
 }
 
-function renderRows(profiles) {
+function renderNoFriendsRow() {
+  const tr = document.createElement('tr');
+  tr.classList.add('tf__no-friends');
+  const td = document.createElement('td');
+  td.innerHTML = getMessage('no_friends');
+  tr.appendChild(td);
+  return tr;
+}
+
+function renderProfileRows(profiles) {
   const profileArr = Object.keys(profiles).map(id => profiles[id]);
   profileArr.sort((a, b) => {
     const rankA = a.rank || Number.POSITIVE_INFINITY;
@@ -88,8 +97,13 @@ function renderRows(profiles) {
 
 function renderRanklist(header, profiles) {
   const ranklist = document.createElement('tbody');
-  ranklist.appendChild(header);
-  renderRows(profiles).forEach(row => ranklist.appendChild(row));
+  const rows = renderProfileRows(profiles);
+  if (rows.length) {
+    ranklist.appendChild(header);
+    rows.forEach(row => ranklist.appendChild(row));
+  } else {
+    ranklist.appendChild(renderNoFriendsRow());
+  }
   return ranklist;
 }
 

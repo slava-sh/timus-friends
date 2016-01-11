@@ -18,5 +18,9 @@
   "unfollow": {
     "message": "Удалить из друзей",
     "description": ""
+  },
+  "no_friends": {
+    "message": "Добавьте друзей",
+    "description": "Shown when the user has no friends"
   }
 }
