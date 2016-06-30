@@ -60,7 +60,7 @@
         "scripts/friends.js"
       ],
       "css": ["styles/friends.css"],
-      "run_at": "document_end"
+      "run_at": "document_start"
     }
   ]
 }

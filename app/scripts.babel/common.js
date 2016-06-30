@@ -29,27 +29,28 @@ function getMessage(id) {
   return messageBundle[id];
 }
 
-const FRIENDS_PREFIX = 'friends_';
+const FRIENDS_KEY = 'friends';
+const FRIENDS_UPDATED_KEY = 'friends_updated';
 const LOCALSTORAGE_EXPIRE_SECS = 5 * 60;
 
 function saveFriendsToLocalStorage(friends) {
-  localStorage[FRIENDS_PREFIX + 'updated'] = Date.now();
-  localStorage[FRIENDS_PREFIX + 'list'] = Object.keys(friends);
+  localStorage[FRIENDS_UPDATED_KEY] = Date.now();
+  localStorage[FRIENDS_KEY] = Object.keys(friends);
+}
+
+function parseArray(s) {
+  return s === '' ? [] : s.split(',');
 }
 
 function getFriendsFromLocalStorage() {
-  const updated = localStorage[FRIENDS_PREFIX + 'updated'];
+  const updated = localStorage[FRIENDS_UPDATED_KEY];
   if (updated === undefined ||
       Date.now() - parseInt(updated, 10) > LOCALSTORAGE_EXPIRE_SECS * 1000) {
     return null;
   }
 
-  const friendList = localStorage[FRIENDS_PREFIX + 'list'];
-  if (friendList === '') {
-    return {};
-  }
   const result = {};
-  for (const id of friendList.split(',')) {
+  for (const id of parseArray(localStorage[FRIENDS_KEY])) {
     result[id] = true;
   }
   return result;
@@ -113,7 +114,8 @@ function getQueryVariable(variable, url) {
 
 function follow(profileId) {
   if (profileId) {
-    localStorage[FRIENDS_PREFIX + 'list'] += ',' + profileId;
+    const friends = parseArray(localStorage[FRIENDS_KEY]);
+    localStorage[FRIENDS_KEY] = friends.concat([profileId]);
 
     chrome.runtime.sendMessage({ follow: true, profileId });
   }
@@ -121,8 +123,8 @@ function follow(profileId) {
 
 function unfollow(profileId) {
   if (profileId) {
-    const friends = localStorage[FRIENDS_PREFIX + 'list'].split(',');
-    localStorage[FRIENDS_PREFIX + 'list'] = friends.filter(id => id !== profileId);
+    const friends = parseArray(localStorage[FRIENDS_KEY]);
+    localStorage[FRIENDS_KEY] = friends.filter(id => id !== profileId);
 
     chrome.runtime.sendMessage({ unfollow: true, profileId });
   }

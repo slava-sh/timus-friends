@@ -118,7 +118,9 @@ function cacheRanks(profiles) {
   chrome.runtime.sendMessage({ setCachedRanks: true, cachedRanks: ranks });
 }
 
-init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
+const SELECTOR_TO_HIDE = 'body > table > tbody > tr:nth-child(n+3)';
+
+function showFriends({ friends, cachedRanks }) {
   let loadingFriends = 0;
   Object.keys(friends).map(id => {
     friends[id] = { id, needsLoading: true };
@@ -145,6 +147,9 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
     const newRanklist = renderRanklist(header, friends);
     ranklist.parentElement.replaceChild(newRanklist, ranklist);
     ranklist = newRanklist;
+
+    Array.from(document.querySelectorAll(SELECTOR_TO_HIDE))
+      .forEach(elem => elem.style.display = '');
   }
 
   document.title = getMessage('friends_ranklist');
@@ -203,5 +208,13 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
       friends[myId].me = true;
       replaceRanklist();
     }
+  });
+}
+
+observer.forEach(SELECTOR_TO_HIDE, elem => elem.style.display = 'none');
+
+init({ friends: true, cachedRanks: true }, data => {
+  document.addEventListener('DOMContentLoaded', () => {
+    showFriends(data);
   });
 });
