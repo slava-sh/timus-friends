@@ -19,6 +19,7 @@
       "matches": ["*://acm.timus.ru/*"],
       "js": [
         "scripts/element_observer.js",
+        "scripts/locales.js",
         "scripts/common.js",
         "scripts/menu.js"
       ],
@@ -29,6 +30,7 @@
       "matches": ["*://acm.timus.ru/author.aspx?*"],
       "js": [
         "scripts/element_observer.js",
+        "scripts/locales.js",
         "scripts/common.js",
         "scripts/author.js",
         "scripts/ranklist.js"
@@ -43,6 +45,7 @@
       "exclude_matches": ["*://acm.timus.ru/ranklist.aspx?friends*"],
       "js": [
         "scripts/element_observer.js",
+        "scripts/locales.js",
         "scripts/common.js",
         "scripts/ranklist.js"
       ],
@@ -52,15 +55,12 @@
       "matches": ["*://acm.timus.ru/ranklist.aspx?friends*"],
       "js": [
         "scripts/element_observer.js",
+        "scripts/locales.js",
         "scripts/common.js",
         "scripts/friends.js"
       ],
       "css": ["styles/friends.css"],
       "run_at": "document_end"
     }
-  ],
-  "web_accessible_resources": [
-    "_locales/ru/messages.json",
-    "_locales/en/messages.json"
   ]
 }

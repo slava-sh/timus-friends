@@ -8,6 +8,7 @@
     "chrome": true
   },
   "rules": {
+    "no-loop-func": 0,
     "no-param-reassign": 0,
     "no-unused-vars": 0,
     "no-undef": 0

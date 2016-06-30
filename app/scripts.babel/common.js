@@ -16,37 +16,59 @@ function ajax(options, callback) {
   return request.send(options.data);
 }
 
-function getSiteLocale(callback) {
-  // observer.forEach('.panel a[href="/news.aspx"]', newsLink =>
-  //   callback(newsLink.innerText === 'Site news' ? 'en' : 'ru'));
-  callback('en');
-}
-
 let messageBundle;
 
 function loadMessageBundle(callback) {
-  getSiteLocale(locale => ajax({
-    method: 'GET',
-    url: chrome.runtime.getURL(`_locales/${locale}/messages.json`),
-  }, response => {
-    messageBundle = JSON.parse(response);
+  getSiteMessages(messages => {
+    messageBundle = messages;
     callback();
-  }));
+  });
 }
 
 function getMessage(id) {
-  return messageBundle[id].message;
+  return messageBundle[id];
+}
+
+const FRIENDS_PREFIX = 'friends_';
+const LOCALSTORAGE_EXPIRE_SECS = 5 * 60;
+
+function saveFriendsToLocalStorage(friends) {
+  localStorage[FRIENDS_PREFIX + 'updated'] = Date.now();
+  localStorage[FRIENDS_PREFIX + 'list'] = Object.keys(friends);
+}
+
+function getFriendsFromLocalStorage() {
+  const updated = localStorage[FRIENDS_PREFIX + 'updated'];
+  if (updated === undefined ||
+      Date.now() - parseInt(updated, 10) > LOCALSTORAGE_EXPIRE_SECS * 1000) {
+    return null;
+  }
+
+  const friendList = localStorage[FRIENDS_PREFIX + 'list'];
+  if (friendList === '') {
+    return {};
+  }
+  const result = {};
+  for (const id of friendList.split(',')) {
+    result[id] = true;
+  }
+  return result;
 }
 
 function injectFriends(requires, data, callback) {
   if (requires.friends) {
-    chrome.runtime.sendMessage({ getFriends: true }, friends => {
-      data.friends = friends;
-      callback(data);
-    });
-  } else {
-    callback(data);
+    data.friends = getFriendsFromLocalStorage();
+    if (data.friends === null) {
+      chrome.runtime.sendMessage({ getFriends: true }, friends => {
+        data.friends = friends;
+        saveFriendsToLocalStorage(friends);
+
+        callback(data);
+      });
+      return;
+    }
   }
+  callback(data);
 }
 
 function injectCachedRanks(requires, data, callback) {
@@ -91,12 +113,17 @@ function getQueryVariable(variable, url) {
 
 function follow(profileId) {
   if (profileId) {
+    localStorage[FRIENDS_PREFIX + 'list'] += ',' + profileId;
+
     chrome.runtime.sendMessage({ follow: true, profileId });
   }
 }
 
 function unfollow(profileId) {
   if (profileId) {
+    const friends = localStorage[FRIENDS_PREFIX + 'list'].split(',');
+    localStorage[FRIENDS_PREFIX + 'list'] = friends.filter(id => id !== profileId);
+
     chrome.runtime.sendMessage({ unfollow: true, profileId });
   }
 }
