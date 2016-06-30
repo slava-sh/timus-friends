@@ -18,20 +18,22 @@
     {
       "matches": ["*://acm.timus.ru/*"],
       "js": [
+        "scripts/element_observer.js",
         "scripts/common.js",
         "scripts/menu.js"
       ],
       "css": ["styles/button.css"],
-      "run_at": "document_end"
+      "run_at": "document_start"
     },
     {
       "matches": ["*://acm.timus.ru/author.aspx?*"],
       "js": [
+        "scripts/element_observer.js",
         "scripts/common.js",
         "scripts/author.js",
         "scripts/ranklist.js"
       ],
-      "run_at": "document_end"
+      "run_at": "document_start"
     },
     {
       "matches": [
@@ -40,14 +42,16 @@
       ],
       "exclude_matches": ["*://acm.timus.ru/ranklist.aspx?friends*"],
       "js": [
+        "scripts/element_observer.js",
         "scripts/common.js",
         "scripts/ranklist.js"
       ],
-      "run_at": "document_end"
+      "run_at": "document_start"
     },
     {
       "matches": ["*://acm.timus.ru/ranklist.aspx?friends*"],
       "js": [
+        "scripts/element_observer.js",
         "scripts/common.js",
         "scripts/friends.js"
       ],

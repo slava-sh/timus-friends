@@ -1,5 +1,5 @@
-init({ friends: true }, ({ friends }) => {
+init({ friends: true }, ({ observer, friends }) => {
   const profileId = getQueryVariable('id');
   const button = createButton(friends.hasOwnProperty(profileId), profileId);
-  document.querySelector('.author_name').appendChild(button);
+  observer.forEach('.author_name', elem => elem.appendChild(button));
 });

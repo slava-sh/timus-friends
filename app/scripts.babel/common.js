@@ -1,3 +1,6 @@
+const observer = new ElementObserver();
+observer.observe();
+
 function ajax(options, callback) {
   const request = new XMLHttpRequest();
   request.open(options.method, options.url, options.async || true);
@@ -13,21 +16,22 @@ function ajax(options, callback) {
   return request.send(options.data);
 }
 
-function getSiteLocale() {
-  return /Задачи/.test(document.querySelector('body').innerText) ? 'ru' : 'en';
+function getSiteLocale(callback) {
+  // observer.forEach('.panel a[href="/news.aspx"]', newsLink =>
+  //   callback(newsLink.innerText === 'Site news' ? 'en' : 'ru'));
+  callback('en');
 }
 
 let messageBundle;
 
 function loadMessageBundle(callback) {
-  const locale = getSiteLocale();
-  ajax({
+  getSiteLocale(locale => ajax({
     method: 'GET',
     url: chrome.runtime.getURL(`_locales/${locale}/messages.json`),
   }, response => {
     messageBundle = JSON.parse(response);
     callback();
-  });
+  }));
 }
 
 function getMessage(id) {
@@ -58,7 +62,7 @@ function injectCachedRanks(requires, data, callback) {
 
 function init(requires, callback) {
   loadMessageBundle(() => {
-    injectFriends(requires, {}, data => {
+    injectFriends(requires, { observer }, data => {
       injectCachedRanks(requires, data, callback);
     });
   });

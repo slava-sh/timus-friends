@@ -1,7 +1,7 @@
-init({ friends: true }, ({ friends }) => {
-  Array.from(document.querySelectorAll('.ranklist tr.content td.name')).forEach(td => {
-    const profileLink = td.querySelector('a');
+init({ friends: true }, ({ observer, friends }) => {
+  observer.forEach('.ranklist tr.content td.name a', profileLink => {
     const profileId = getQueryVariable('id', profileLink.getAttribute('href'));
+    const td = profileLink.parentElement;
     td.appendChild(createButton(friends.hasOwnProperty(profileId), profileId));
   });
 });
