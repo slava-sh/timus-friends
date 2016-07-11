@@ -75,7 +75,7 @@ function injectCachedRanks(requires, data, callback) {
 
 function init(requires, callback) {
   loadMessageBundle(() => {
-    injectFriends(requires, { observer }, data => {
+    injectFriends(requires, {}, data => {
       injectCachedRanks(requires, data, callback);
     });
   });
