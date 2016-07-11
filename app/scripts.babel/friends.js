@@ -147,18 +147,16 @@ function showFriends({ friends, cachedRanks }) {
     const newRanklist = renderRanklist(header, friends);
     ranklist.parentElement.replaceChild(newRanklist, ranklist);
     ranklist = newRanklist;
-
-    Array.from(document.querySelectorAll(SELECTOR_TO_HIDE))
-      .forEach(el => el.style.display = '');
   }
 
-  document.title = getMessage('friends_ranklist');
   const pageBody = ranklist.parentElement.parentElement;
   pageBody.querySelector('.title').innerText = getMessage('friends_ranklist');
   pageBody.querySelector('div').remove(); // Volume navigation
 
   parseRanklistPage(document).forEach(loadProfile);
   replaceRanklist();
+  Array.from(document.querySelectorAll(SELECTOR_TO_HIDE))
+    .forEach(el => el.style.display = '');
 
   const pagesToLoad = {};
   Object.keys(friends).forEach(id => {
@@ -210,6 +208,10 @@ function showFriends({ friends, cachedRanks }) {
     }
   });
 }
+
+init({}, () => {
+  document.title = getMessage('friends_ranklist') + ' @ Timus Online Judge';
+});
 
 observer.forEach(SELECTOR_TO_HIDE, el => el.style.display = 'none');
 
