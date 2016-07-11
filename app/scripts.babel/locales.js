@@ -16,6 +16,6 @@ const MESSAGES = {
 };
 
 function getSiteMessages(callback) {
-  observer.forEach('.panel a[href="/news.aspx"]', newsLink =>
-    callback(MESSAGES[newsLink.innerText === 'Site news' ? 'en' : 'ru']));
+  observer.forEachTextIn('.panel a[href="/news.aspx"]', newsLabel =>
+    callback(MESSAGES[newsLabel.textContent === 'Site news' ? 'en' : 'ru']));
 }
