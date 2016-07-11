@@ -149,7 +149,7 @@ function showFriends({ friends, cachedRanks }) {
     ranklist = newRanklist;
 
     Array.from(document.querySelectorAll(SELECTOR_TO_HIDE))
-      .forEach(elem => elem.style.display = '');
+      .forEach(el => el.style.display = '');
   }
 
   document.title = getMessage('friends_ranklist');
@@ -211,7 +211,7 @@ function showFriends({ friends, cachedRanks }) {
   });
 }
 
-observer.forEach(SELECTOR_TO_HIDE, elem => elem.style.display = 'none');
+observer.forEach(SELECTOR_TO_HIDE, el => el.style.display = 'none');
 
 init({ friends: true, cachedRanks: true }, data => {
   document.addEventListener('DOMContentLoaded', () => {

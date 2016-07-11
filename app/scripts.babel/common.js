@@ -1,5 +1,4 @@
 const observer = new ElementObserver();
-observer.observe();
 
 function ajax(options, callback) {
   const request = new XMLHttpRequest();
@@ -34,26 +33,17 @@ const FRIENDS_UPDATED_KEY = 'friends_updated';
 const LOCALSTORAGE_EXPIRE_SECS = 5 * 60;
 
 function saveFriendsToLocalStorage(friends) {
-  localStorage[FRIENDS_UPDATED_KEY] = Date.now();
-  localStorage[FRIENDS_KEY] = Object.keys(friends);
-}
-
-function parseArray(s) {
-  return s === '' ? [] : s.split(',');
+  localStorage.setItem(FRIENDS_UPDATED_KEY, Date.now());
+  localStorage.setItem(FRIENDS_KEY, JSON.stringify(friends));
 }
 
 function getFriendsFromLocalStorage() {
-  const updated = localStorage[FRIENDS_UPDATED_KEY];
-  if (updated === undefined ||
+  const updated = localStorage.getItem(FRIENDS_UPDATED_KEY);
+  if (updated === null ||
       Date.now() - parseInt(updated, 10) > LOCALSTORAGE_EXPIRE_SECS * 1000) {
     return null;
   }
-
-  const result = {};
-  for (const id of parseArray(localStorage[FRIENDS_KEY])) {
-    result[id] = true;
-  }
-  return result;
+  return JSON.parse(localStorage.getItem(FRIENDS_KEY));
 }
 
 function injectFriends(requires, data, callback) {
@@ -114,8 +104,9 @@ function getQueryVariable(variable, url) {
 
 function follow(profileId) {
   if (profileId) {
-    const friends = parseArray(localStorage[FRIENDS_KEY]);
-    localStorage[FRIENDS_KEY] = friends.concat([profileId]);
+    const friends = JSON.parse(localStorage.getItem(FRIENDS_KEY));
+    friends[profileId] = true;
+    localStorage.setItem(FRIENDS_KEY, JSON.stringify(friends));
 
     chrome.runtime.sendMessage({ follow: true, profileId });
   }
@@ -123,8 +114,9 @@ function follow(profileId) {
 
 function unfollow(profileId) {
   if (profileId) {
-    const friends = parseArray(localStorage[FRIENDS_KEY]);
-    localStorage[FRIENDS_KEY] = friends.filter(id => id !== profileId);
+    const friends = JSON.parse(localStorage.getItem(FRIENDS_KEY));
+    delete friends[profileId];
+    localStorage.setItem(FRIENDS_KEY, JSON.stringify(friends));
 
     chrome.runtime.sendMessage({ unfollow: true, profileId });
   }

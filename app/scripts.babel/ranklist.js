@@ -1,4 +1,4 @@
-init({ friends: true }, ({ observer, friends }) => {
+init({ friends: true }, ({ friends }) => {
   observer.forEach('.ranklist tr.content td.name a', profileLink => {
     const profileId = getQueryVariable('id', profileLink.getAttribute('href'));
     const td = profileLink.parentElement;

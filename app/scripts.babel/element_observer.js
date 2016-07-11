@@ -1,41 +1,35 @@
-const HANDLER_CLASS_PREFIX = 'handler_';
+const HANDLER_CLASS_PREFIX = 'tf__observer-';
 
 class ElementObserver {
   constructor() {
     this._handlers = [];
-    this._observer = new MutationObserver(mutations => {
-      for (const mutation of mutations) {
-        for (const node of Array.from(mutation.addedNodes)) {
+    new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+        Array.from(mutation.addedNodes).forEach(node => {
           if (!(node instanceof Element)) {
-            continue;
+            return;
           }
 
-          this._handlers.forEach((item, i) => {
-            if (node.matches(item.selector) &&
+          this._handlers.forEach(({ selector, handler }, i) => {
+            if (node.matches(selector) &&
                 !node.classList.contains(HANDLER_CLASS_PREFIX + i)) {
-              // console.log('online ' + item.selector);
-              item.handler(node);
+              handler(node);
             }
           });
-        }
-      }
+        });
+      });
+    }).observe(document.documentElement, {
+      childList: true,
+      subtree: true,
     });
   }
 
   forEach(selector, handler) {
     const handlerId = this._handlers.length;
     for (const node of Array.from(document.querySelectorAll(selector))) {
-      // console.log('offline ' + selector);
       handler(node);
       node.classList.add(HANDLER_CLASS_PREFIX + handlerId);
     }
     this._handlers.push({ selector, handler });
-  }
-
-  observe() {
-    this._observer.observe(document.documentElement, {
-      childList: true,
-      subtree: true,
-    });
   }
 }
