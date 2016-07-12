@@ -6,27 +6,5 @@
   "appDescription": {
     "message": "Добавляет рейтинг друзей на Timus Online Judge.",
     "description": "The description of the application"
-  },
-  "friends_ranklist": {
-    "message": "Рейтинг друзей",
-    "description": ""
-  },
-  "follow": {
-    "message": "Добавить в друзья",
-    "description": ""
-  },
-  "unfollow": {
-    "message": "Удалить из друзей",
-    "description": ""
-  },
-  "no_friends": {
-    "message": "Используйте кнопку $star$, чтобы добавить друзей.",
-    "description": "Shown when the user has no friends",
-    "placeholders": {
-      "star": {
-        "content": "$1",
-        "example": "The placeholder will be replaced with the actual star icon."
-      }
-    }
   }
 }

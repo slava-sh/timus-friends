@@ -6,27 +6,5 @@
   "appDescription": {
     "message": "Adds Codeforces-style friending to the Timus Online Judge.",
     "description": "The description of the application"
-  },
-  "friends_ranklist": {
-    "message": "Friends ranklist",
-    "description": ""
-  },
-  "follow": {
-    "message": "Add to friends",
-    "description": ""
-  },
-  "unfollow": {
-    "message": "Remove from friends",
-    "description": ""
-  },
-  "no_friends": {
-    "message": "Use the $star$ icon to add friends.",
-    "description": "Shown when the user has no friends",
-    "placeholders": {
-      "star": {
-        "content": "$1",
-        "example": "The placeholder will be replaced with the actual star icon."
-      }
-    }
   }
 }

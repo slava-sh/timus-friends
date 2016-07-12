@@ -118,7 +118,9 @@ function cacheRanks(profiles) {
   chrome.runtime.sendMessage({ setCachedRanks: true, cachedRanks: ranks });
 }
 
-init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
+const SELECTOR_TO_HIDE = 'body > table > tbody > tr:nth-child(n+3)';
+
+function showFriends({ friends, cachedRanks }) {
   let loadingFriends = 0;
   Object.keys(friends).map(id => {
     friends[id] = { id, needsLoading: true };
@@ -147,13 +149,14 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
     ranklist = newRanklist;
   }
 
-  document.title = getMessage('friends_ranklist');
   const pageBody = ranklist.parentElement.parentElement;
   pageBody.querySelector('.title').innerText = getMessage('friends_ranklist');
   pageBody.querySelector('div').remove(); // Volume navigation
 
   parseRanklistPage(document).forEach(loadProfile);
   replaceRanklist();
+  Array.from(document.querySelectorAll(SELECTOR_TO_HIDE))
+    .forEach(el => el.style.display = '');
 
   const pagesToLoad = {};
   Object.keys(friends).forEach(id => {
@@ -203,5 +206,17 @@ init({ friends: true, cachedRanks: true }, ({ friends, cachedRanks }) => {
       friends[myId].me = true;
       replaceRanklist();
     }
+  });
+}
+
+init({}, () => {
+  document.title = getMessage('friends_ranklist') + ' @ Timus Online Judge';
+});
+
+observer.forEach(SELECTOR_TO_HIDE, el => el.style.display = 'none');
+
+init({ friends: true, cachedRanks: true }, data => {
+  document.addEventListener('DOMContentLoaded', () => {
+    showFriends(data);
   });
 });

@@ -1,3 +1,5 @@
+const observer = new ElementObserver();
+
 function ajax(options, callback) {
   const request = new XMLHttpRequest();
   request.open(options.method, options.url, options.async || true);
@@ -13,36 +15,51 @@ function ajax(options, callback) {
   return request.send(options.data);
 }
 
-function getSiteLocale() {
-  return /Задачи/.test(document.querySelector('body').innerText) ? 'ru' : 'en';
-}
-
 let messageBundle;
 
 function loadMessageBundle(callback) {
-  const locale = getSiteLocale();
-  ajax({
-    method: 'GET',
-    url: chrome.runtime.getURL(`_locales/${locale}/messages.json`),
-  }, response => {
-    messageBundle = JSON.parse(response);
+  getSiteMessages(messages => {
+    messageBundle = messages;
     callback();
   });
 }
 
 function getMessage(id) {
-  return messageBundle[id].message;
+  return messageBundle[id];
+}
+
+const FRIENDS_KEY = 'friends';
+const FRIENDS_UPDATED_KEY = 'friends_updated';
+const LOCALSTORAGE_EXPIRE_SECS = 5 * 60;
+
+function saveFriendsToLocalStorage(friends) {
+  localStorage.setItem(FRIENDS_UPDATED_KEY, Date.now());
+  localStorage.setItem(FRIENDS_KEY, JSON.stringify(friends));
+}
+
+function getFriendsFromLocalStorage() {
+  const updated = localStorage.getItem(FRIENDS_UPDATED_KEY);
+  if (updated === null ||
+      Date.now() - parseInt(updated, 10) > LOCALSTORAGE_EXPIRE_SECS * 1000) {
+    return null;
+  }
+  return JSON.parse(localStorage.getItem(FRIENDS_KEY));
 }
 
 function injectFriends(requires, data, callback) {
   if (requires.friends) {
-    chrome.runtime.sendMessage({ getFriends: true }, friends => {
-      data.friends = friends;
-      callback(data);
-    });
-  } else {
-    callback(data);
+    data.friends = getFriendsFromLocalStorage();
+    if (data.friends === null) {
+      chrome.runtime.sendMessage({ getFriends: true }, friends => {
+        data.friends = friends;
+        saveFriendsToLocalStorage(friends);
+
+        callback(data);
+      });
+      return;
+    }
   }
+  callback(data);
 }
 
 function injectCachedRanks(requires, data, callback) {
@@ -87,12 +104,20 @@ function getQueryVariable(variable, url) {
 
 function follow(profileId) {
   if (profileId) {
+    const friends = JSON.parse(localStorage.getItem(FRIENDS_KEY));
+    friends[profileId] = true;
+    localStorage.setItem(FRIENDS_KEY, JSON.stringify(friends));
+
     chrome.runtime.sendMessage({ follow: true, profileId });
   }
 }
 
 function unfollow(profileId) {
   if (profileId) {
+    const friends = JSON.parse(localStorage.getItem(FRIENDS_KEY));
+    delete friends[profileId];
+    localStorage.setItem(FRIENDS_KEY, JSON.stringify(friends));
+
     chrome.runtime.sendMessage({ unfollow: true, profileId });
   }
 }
